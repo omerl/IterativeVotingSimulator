@@ -29,6 +29,8 @@
 
 using namespace std;
 
+string saveDirectoy;
+string dadOutput="./";
 
 void runFamily(int voterNumber, int candidateNumber, int gameNumber);
 void runDistribution(distributionTypes disType,string s, vector<vector<PrefList> > prefs,int voterNumber, ofstream *output);
@@ -62,9 +64,16 @@ int main (int argc, const char * argv[])
             cout<<s;
             dataFile.close();
         }
+        else {
+            saveDirectoy="/Users/omer/Desktop/Runs/";
+        }
+    }
+    
+    
+    if (argc<=1) {
+        saveDirectoy="/Users/omer/Desktop/Runs/";
     }
     /*
-     
      for (int i=3; i<9; i++) {
      runFamily(10,i,200);
      runFamily(20,i,200);
@@ -82,13 +91,12 @@ void runFamily(int voterNumber,int candidateNumber, int gameNumber) {
     dataFile.open (fileName.str().c_str());
     
     map<distributionTypes,vector<vector<PrefList> > > m;
-    for (distributionTypes i=luce; i<=distLast; i++) {
+    for (distributionTypes i=distFirst; i<=distLast; i++) {
         for (int j=0; j<gameNumber; j++) {
             m[i].push_back(*buildPrefs(i, voterNumber, candidateNumber));
         }
-        cout<<"yes";
     }
-    for (distributionTypes i=luce; i<=distLast; i++) {
+    for (distributionTypes i=distFirst; i<=distLast; i++) {
         runDistribution(i,printDistributionType(i),m[i],voterNumber,&dataFile);
     }
     
