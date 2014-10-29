@@ -123,6 +123,9 @@ void VoteFileHandle::handleFile(const char* f) {
                 string temp=trim(line.substr(line.find(kS)+2,line.find(partDelimiter)));
                 while (temp.length()>0) {
                     string temp2=trim(temp.substr(0,temp.find(listDelimiter)));
+                    if (temp.find(listDelimiter)==string::npos) {
+                        temp="";
+                    }
                     double d;
                     if ((istringstream(temp2)) >> d){
                         ks.push_back(d);
@@ -153,7 +156,7 @@ void VoteFileHandle::handleFile(const char* f) {
             }
             
             if (line.find(vType)!=string::npos) {
-                if ((line.find("true")!=string::npos) || (line.find("truthful")!=string::npos)) {
+                if ((line.find("true")!=string::npos) || (line.find("truth")!=string::npos)) {
                     rt=truthful;
                 }
                 if (line.find("lazy")!=string::npos) {
@@ -167,7 +170,7 @@ void VoteFileHandle::handleFile(const char* f) {
             if (line.find(dist)!=string::npos) {
                 long ind=line.find(wordDelimiter,line.find(dist));
                 distString=trim(line.substr(ind+1,line.find(partDelimiter)));
-                
+                std::transform(distString.begin(), distString.end(), distString.begin(), ::tolower);
             }
             
             if (line.find(voters)!=string::npos) {
@@ -228,7 +231,9 @@ string VoteFileHandle::runIt(string directory) {
         map<distributionTypes,vector<vector<PrefList> > > m;
         string s;
         for (distributionTypes i=distFirst; i<=distLast; i++) {
-            if ((distString.find("all")!=string::npos) || (distString.find(printDistributionType(i))!=string::npos)) {
+            string tmp=printDistributionType(i);
+            std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
+            if ((distString.find("all")!=string::npos) || (distString.find(tmp)!=string::npos)) {
                 for (int j=0; j<gameNumber; j++) {
                     m[i].push_back(*buildPrefs(i, voterNum, candNum));
                 }
